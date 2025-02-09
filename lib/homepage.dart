@@ -1,4 +1,5 @@
 import 'package:bomberman/button.dart';
+import 'package:bomberman/pixel.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +10,56 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int numbersOfSquares = 150; //
   int playerPosition = 0;
+  List<int> barriers = [
+   11,13,15,17,18,
+   31,33,35,37,38,
+   51,53,55,57,58,
+   71,73,75,77,78,
+   91,93,95,97,98,
+   111,113,115,117,118,
+  
+  ];
+   List<int> boxes = [
+   12,14,16,18,
+   32,34,36,38,
+   52,54,56,58,
+   72,74,76,78,
+   92,94,96,98,
+   112,114,116,118,
+  
+  ];
+
+  void moveUp() {
+    setState(() {
+      if (playerPosition - 10 >= 0 && !barriers.contains(playerPosition-10) && !boxes.contains(playerPosition-10)) {
+        playerPosition -= 10;
+      }
+    });
+  }
+
+  void moveRight() {
+    setState(() {
+      if (!(playerPosition % 10 == 9 )&& !barriers.contains(playerPosition+1) && !boxes.contains(playerPosition+1)) {
+        playerPosition += 1;
+      }
+    });
+  }
+
+  void moveLeft() {
+    setState(() {
+      if (!(playerPosition % 10 == 0 )&& !barriers.contains(playerPosition-1) && !boxes.contains(playerPosition-1)) {
+        playerPosition -= 1;
+      }
+    });
+  }
+
+  void moveDown() {
+    setState(() {
+      if (playerPosition + 10 < numbersOfSquares && !barriers.contains(playerPosition+10) && !boxes.contains(playerPosition+10)) {
+        playerPosition += 10;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +76,17 @@ class _HomePageState extends State<HomePage> {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 10),
                   itemBuilder: (BuildContext context, int index) {
-                   if (playerPosition == index){
-                     return Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            color: Colors.white,
-                            child: Center(child: Text(index.toString()))
-                          )),
-                    );
-                   } else {
-                     return Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            color: Colors.grey,
-                            child: Center(child: Text(index.toString()))
-                          )),
-                    );
-                   }
+                    if (playerPosition == index) {
+                      return MyPixel(
+                          color: Colors.white,);
+                    } else if(barriers.contains(index)) {
+                      return MyPixel( color: Colors.black ,);
+                    }else if(boxes.contains(index)) {
+                      return MyPixel( color: Colors.brown ,);
+                    } else {
+                      return MyPixel(
+                          color: Colors.grey, child: Text(index.toString()));
+                    }
                   }),
             ),
           ),
@@ -56,15 +97,39 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [MyButton(), MyButton(color: Colors.blue, child: Icon(Icons.arrow_drop_up, size: 70)), MyButton()],
+                  children: [
+                    MyButton(),
+                    MyButton(
+                        function: moveUp,
+                        color: Colors.blue,
+                        child: Icon(Icons.arrow_drop_up, size: 70)),
+                    MyButton()
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [MyButton(color: Colors.blue, child: Icon(Icons.arrow_left, size: 70)), MyButton(), MyButton(color: Colors.blue, child: Icon(Icons.arrow_right, size: 70))],
+                  children: [
+                    MyButton(
+                        function: moveLeft,
+                        color: Colors.blue,
+                        child: Icon(Icons.arrow_left, size: 70)),
+                    MyButton(),
+                    MyButton(
+                        function: moveRight,
+                        color: Colors.blue,
+                        child: Icon(Icons.arrow_right, size: 70))
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [MyButton(), MyButton(color: Colors.blue, child: Icon(Icons.arrow_drop_down, size: 70)), MyButton()],
+                  children: [
+                    MyButton(),
+                    MyButton(
+                        function: moveDown,
+                        color: Colors.blue,
+                        child: Icon(Icons.arrow_drop_down, size: 70)),
+                    MyButton()
+                  ],
                 )
               ],
             )),
